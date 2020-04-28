@@ -1,0 +1,86 @@
+
+
+service: tipr2tests
+
+custom:
+  settings:
+    DELIVERY_TABLE: deliveries
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  environment: ${self:custom.settings}
+  profile: serverless-admin
+  region: us-west-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.DELIVERY_TABLE}"
+
+
+functions:
+  createDelivery:
+    handler: handler.createDelivery
+    events:
+    - http:
+        path: /delivery
+        method: post
+  getAllDeliveries:
+      handler: handler.getAllDeliveries
+      events:
+      - http:
+          path: /deliveries
+          method: get
+  getDeliveries:
+      handler: handler.getDeliveries
+      events:
+      - http:
+          path: /deliveries/{number}
+          method: get
+  getDelivery:
+      handler: handler.getDelivery
+      events:
+      - http:
+          path: /delivery/{userID}/{id}
+          method: get
+  updateDelivery:
+      handler: handler.updateDelivery
+      events:
+      - http:
+          path: /delivery/{userID}/{id}
+          method: put
+  deleteDelivery:
+      handler: handler.deleteDelivery
+      events:
+      - http:
+          path: /delivery/{userID}/{id}
+          method: delete
+
+
+resources:
+  Resources:
+    DeliveryTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: "userID"
+          AttributeType: "S"
+        - AttributeName: "id"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "userID"
+          KeyType: "HASH"
+        - AttributeName: "id"
+          KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.DELIVERY_TABLE}
