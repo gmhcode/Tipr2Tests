@@ -146,6 +146,7 @@ module.exports.updateDelivery = (event, context, callback) => {
 
   const params = {
     Key: {
+      userID: userID,
       id: id
     },
     TableName: deliveryTable
