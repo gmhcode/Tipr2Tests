@@ -139,23 +139,6 @@ module.exports.getDelivery = (event, context, callback) => {
 */
 
 
-// addressString: Elm Creek State Wildlife Management Area
-
-// dateNumber: 1586923683.132638
-
-// const id
-
-// const isFinished
-
-// const locationId
-
-// const tipAmount
-
-// const tripId
-
-// const userID
-// 'set body = :b, title=:t'
-
 module.exports.updateDelivery = (event, context, callback) => {
   const id = event.pathParameters.id
   const userID = event.pathParameters.userID
